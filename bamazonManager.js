@@ -23,11 +23,24 @@ function getUserInput() {
             choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product"]
         }
     ]).then(answers => {
-        console.log(answers.menuChoice);
+        switch (answers.menuChoice) {
+            case "View Products for Sale":
+                console.log("View Products");
+                break;
+            case "View Low Inventory":
+                console.log("Low Inventory");
+                break;
+            case "Add to Inventory":
+                console.log("Add Inventory");
+                break;
+            case "Add New Product":
+                console.log("Add Product");
+                break;
+        }
     });
 }
 
-setTimeout(getUserInput, 500);
+getUserInput();
 
  
 // connection.end();
