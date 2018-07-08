@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
  
 connection.connect();
 
-console.log(`\n\t\t\tWelcome to BAMazon`);
+console.log(`\n\t\t\tBAMazon - Customer`);
 console.log(`\t\t\t==================\n`);
 console.log(`The following items are for sale:\n`);
 
@@ -59,7 +59,7 @@ function getUserInput() {
 
                     var totalCost = unitPrice * answers.units;
                     
-                    console.log(`\nTransaction SUCCESSFUL: You owe \$${totalCost}\n`);
+                    console.log(`\nTransaction SUCCESSFUL: You owe \$${totalCost.toFixed(2)}\n`);
                 });
             }
             else {
@@ -70,6 +70,3 @@ function getUserInput() {
 }
 
 setTimeout(getUserInput, 500);
-
- 
-// connection.end();
