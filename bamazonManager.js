@@ -87,6 +87,46 @@ function getUserInput() {
     }
 
 
+    function addProduct() {
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "name",
+                message: "Please enter the product name:"
+            },
+            {
+                type: "input",
+                name: "department",
+                message: "Please enter the department name:"
+            },
+            {
+                type: "input",
+                name: "price",
+                message: "Please enter the price:"
+            },
+            {
+                type: "input",
+                name: "quantity",
+                message: "Please enter the quantity:"
+            }
+        ]).then(answers => {
+            var name = answers.name;
+            var department = answers.department;
+            var price = parseFloat(answers.price);
+            var quantity = parseInt(answers.quantity);
+
+            var query = `INSERT INTO products (product_name, department_name, price, stock_quantity)
+                         VALUES (?, ?, ?, ?);`
+            
+            connection.query(query, [name, department, price, quantity], function (error, results, fields) {
+                if (error) throw error;
+
+                console.log(`\n${name} added.\n`);
+            });
+        }); 
+    }
+
+
     inquirer.prompt([
         {
             type: "list",
@@ -107,7 +147,7 @@ function getUserInput() {
                 setTimeout(addInventory, 500);  // display all items before getting inputs for add inventory
                 break;
             case "Add New Product":
-                console.log("Add Product");
+                addProduct();
                 break;
         }
     });
