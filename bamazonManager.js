@@ -11,8 +11,8 @@ var connection = mysql.createConnection({
  
 connection.connect();
 
-console.log(`\n\t\t\tWelcome to BAMazon`);
-console.log(`\t\t\t==================\n`);
+console.log(`\n\t\t\tBAMazon - Manager`);
+console.log(`\t\t\t=================\n`);
 
 function getUserInput() {
     
@@ -43,6 +43,50 @@ function getUserInput() {
     }
 
 
+    function addInventory() {
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "itemID",
+                message: "Please enter the item ID you would like to add inventory for:"
+            },
+            {
+                type: "input",
+                name: "addQty",
+                message: "How many units would you like to add?"
+            }
+        ]).then(answers => {
+            var query = `SELECT stock_quantity FROM products
+                         WHERE item_id = ?`;
+
+            var oldQty = -1;
+            var newQty = 0;
+
+            connection.query(query, [answers.itemID], function (error, results, fields) {
+                if (error) throw error;
+
+                oldQty = results[0]["stock_quantity"];
+            });
+
+            setTimeout(updateQty, 100);     // allow oldQty to be set before making query to update table
+            
+            function updateQty() {
+                newQty = oldQty + parseInt(answers.addQty);
+
+                var updateQuery = `UPDATE products
+                                   SET stock_quantity = ?
+                                   WHERE item_id = ?;`
+
+                connection.query(updateQuery, [newQty, answers.itemID], function (error, results, fields) {
+                    if (error) throw error;
+
+                    console.log(`\nItem #${answers.itemID}'s quantity updated to ${newQty}.\n`);
+                });
+            }
+        }); 
+    }
+
+
     inquirer.prompt([
         {
             type: "list",
@@ -59,7 +103,8 @@ function getUserInput() {
                 lowInventory();
                 break;
             case "Add to Inventory":
-                console.log("Add Inventory");
+                listItems();
+                setTimeout(addInventory, 500);  // display all items before getting inputs for add inventory
                 break;
             case "Add New Product":
                 console.log("Add Product");
