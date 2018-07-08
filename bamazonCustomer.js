@@ -38,10 +38,9 @@ function getUserInput() {
         }
     ]).then(answers => {
         var availStockQuery = `SELECT item_id, price, stock_quantity FROM products
-                               WHERE item_id = "${answers.item_id}";`;
-
+                               WHERE item_id = ?;`;
                                
-        connection.query(availStockQuery, function (error, results, fields) {
+        connection.query(availStockQuery, [answers.item_id], function (error, results, fields) {
             var unitPrice = results[0].price;
 
             if (error) throw error;
@@ -50,16 +49,15 @@ function getUserInput() {
                 var newQuantity = results[0].stock_quantity - answers.units;
 
                 var purchaseQuery = `UPDATE products
-                                     SET stock_quantity = "${newQuantity}"
-                                     WHERE item_id = "${answers.item_id}";`
+                                     SET stock_quantity = ?
+                                     WHERE item_id = ?;`
 
-
-                connection.query(purchaseQuery, function (error, results, fields) {
+                connection.query(purchaseQuery, [newQuantity, answers.item_id], function (error, results, fields) {
                     if (error) throw error;
 
                     var totalCost = unitPrice * answers.units;
                     
-                    console.log(`\nTransaction SUCCESSFUL: You owe \$${totalCost.toFixed(2)}\n`);
+                    console.log(`\nTransaction SUCCESSFUL: You owe \$${totalCost.toFixed(2)}\n`);   // set precision to 2 decimal points
                 });
             }
             else {
